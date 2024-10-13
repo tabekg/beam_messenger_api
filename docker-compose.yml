@@ -1,0 +1,21 @@
+services:
+  beam_messenger_app:
+    build: .
+    container_name: beam_messenger_app
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/var/www
+    ports:
+      - "8000:8000"
+    depends_on:
+      - beam_messenger_pgdb
+
+  beam_messenger_pgdb:
+    image: postgres
+    container_name: beam_messenger_pgdb
+    environment:
+      - POSTGRES_DB=beam_messenger
+      - POSTGRES_USER=beam_user
+      - POSTGRES_PASSWORD=123456
+    volumes:
+      - ./pgdbdata:/var/lib/postgresql/data/
