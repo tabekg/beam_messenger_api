@@ -4,19 +4,51 @@
         <title>Beam Messenger</title>
     </head>
     <body>
-        <h1>Beam Messenger</h1>
+        <h1>Beam Messenger <span id="status_label">Checking...</span></h1>
         <div>
-            <input type="text" />
-            <button>Send</button>
+            <input id="text" type="text" />
+            <button id="send_btn">Send</button>
         </div>
         <div style="padding: 14px;" id="messages"></div>
         
         <script type="text/javascript">
             const messages = document.getElementById('messages')
+            const text = document.getElementById('text')
+            const sendBtn = document.getElementById('send_btn')
+            const statusLabel = document.getElementById('status_label')
+
+            const ws = new WebSocket('ws://' + window.location.host + '/ws')
+            let isOnline = false;
+
+            ws.onmessage = (message) => {
+                messages.innerHTML = `<div>${message.data}</div>` + (messages.innerHTML || '')
+            }
+
+            ws.onopen = () => {
+                statusLabel.innerText = 'Online'
+                isOnline = true;
+            }
+
+            ws.onclose = () => {
+                statusLabel.innerText = 'Offline'
+                isOnline = false;
+            }
+
+            ws.onerror = (message) => {
+                console.log(message)
+            }
 
             fetch('http://' + window.location.host + '/api/messages').then(res => res.json()).then(res => {
-                messages.innerHTML = res.map(g => `<div>${g.content}</div>`)
+                messages.innerHTML = res.map(g => `<div>${g.content}</div>`).join('')
             })
+
+            sendBtn.onclick = () => {
+                if (text.value.length < 1 || !isOnline) {
+                    return
+                }
+                ws.send(text.value)
+                text.value = ''
+            }
         </script>
     </body>
 </html>

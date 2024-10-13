@@ -31,6 +31,8 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
+    'channels',
     'app.apps.AppConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -41,6 +43,14 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
     'rest_framework',
 ]
+
+ASGI_APPLICATION = 'messenger.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    }
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
