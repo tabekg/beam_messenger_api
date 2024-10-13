@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Beam Messenger</title>
+    </head>
+    <body>
+        <h1>Beam Messenger</h1>
+        <div>
+            <input type="text" />
+            <button>Send</button>
+        </div>
+        <div style="padding: 14px;" id="messages"></div>
+        
+        <script type="text/javascript">
+            const messages = document.getElementById('messages')
+
+            fetch('http://' + window.location.host + '/api/messages').then(res => res.json()).then(res => {
+                messages.innerHTML = res.map(g => `<div>${g.content}</div>`)
+            })
+        </script>
+    </body>
+</html>
